@@ -1,3 +1,4 @@
+// Package ffprobe wraps and interprets ffmpeg's ffprobe for Go.
 package ffprobe
 
 import (
