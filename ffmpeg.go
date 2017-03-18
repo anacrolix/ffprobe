@@ -131,7 +131,7 @@ func Run(path string) (info *Info, err error) {
 	return
 }
 
-type ProbeCmd struct {
+type Cmd struct {
 	Cmd  *exec.Cmd
 	Done chan struct{}
 	mu   sync.Mutex
@@ -139,7 +139,7 @@ type ProbeCmd struct {
 	Err  error
 }
 
-func (me *ProbeCmd) runner(stdout, stderr io.ReadCloser) {
+func (me *Cmd) runner(stdout, stderr io.ReadCloser) {
 	defer close(me.Done)
 	lastErrLineCh := lastLineCh(stderr)
 	d := json.NewDecoder(bufio.NewReader(stdout))
@@ -160,7 +160,7 @@ func (me *ProbeCmd) runner(stdout, stderr io.ReadCloser) {
 	return
 }
 
-func Start(path string) (ret *ProbeCmd, err error) {
+func Start(path string) (ret *Cmd, err error) {
 	if ffprobePath == "" {
 		err = FfprobeUnavailableError
 		return
@@ -179,7 +179,7 @@ func Start(path string) (ret *ProbeCmd, err error) {
 	if err != nil {
 		return
 	}
-	ret = &ProbeCmd{
+	ret = &Cmd{
 		Cmd:  cmd,
 		Done: make(chan struct{}),
 	}
