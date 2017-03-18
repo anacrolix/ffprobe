@@ -121,8 +121,8 @@ func lastLineCh(r io.Reader) <-chan string {
 }
 
 // Runs ffprobe or avprobe or similar on the given file path.
-func Probe(path string) (info *Info, err error) {
-	pc, err := StartProbe(path)
+func Run(path string) (info *Info, err error) {
+	pc, err := Start(path)
 	if err != nil {
 		return
 	}
@@ -160,7 +160,7 @@ func (me *ProbeCmd) runner(stdout, stderr io.ReadCloser) {
 	return
 }
 
-func StartProbe(path string) (ret *ProbeCmd, err error) {
+func Start(path string) (ret *ProbeCmd, err error) {
 	if ffprobePath == "" {
 		err = FfprobeUnavailableError
 		return
