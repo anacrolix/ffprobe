@@ -1,4 +1,4 @@
-package ffmpeg
+package ffprobe
 
 import (
 	"testing"

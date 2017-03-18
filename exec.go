@@ -1,6 +1,6 @@
 // +build !windows
 
-package ffmpeg
+package ffprobe
 
 import (
 	"os/exec"
