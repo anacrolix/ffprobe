@@ -19,7 +19,7 @@ type Cmd struct {
 
 func Start(path string) (ret *Cmd, err error) {
 	if exePath == "" {
-		err = FfprobeUnavailableError
+		err = ExeNotFound
 		return
 	}
 	cmd := exec.Command(exePath,

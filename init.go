@@ -25,8 +25,7 @@ func init() {
 		return
 	}
 	if isExecErrNotFound(err) {
-		log.Print("ffprobe and avprobe not found in $PATH")
-		return
+		err = ExeNotFound
 	}
 	log.Print(err)
 }
