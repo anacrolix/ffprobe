@@ -50,7 +50,7 @@ func (info *Info) Duration() (duration time.Duration, err error) {
 }
 
 var (
-	ffprobePath      string
+	exePath          string
 	outputFormatFlag = "-of"
 )
 
@@ -67,7 +67,7 @@ func isExecErrNotFound(err error) bool {
 
 func init() {
 	var err error
-	ffprobePath, err = exec.LookPath("ffprobe")
+	exePath, err = exec.LookPath("ffprobe")
 	if err == nil {
 		outputFormatFlag = "-print_format"
 		return
@@ -75,7 +75,7 @@ func init() {
 	if !isExecErrNotFound(err) {
 		log.Print(err)
 	}
-	ffprobePath, err = exec.LookPath("avprobe")
+	exePath, err = exec.LookPath("avprobe")
 	if err == nil {
 		return
 	}
@@ -161,11 +161,11 @@ func (me *Cmd) runner(stdout, stderr io.ReadCloser) {
 }
 
 func Start(path string) (ret *Cmd, err error) {
-	if ffprobePath == "" {
+	if exePath == "" {
 		err = FfprobeUnavailableError
 		return
 	}
-	cmd := exec.Command(ffprobePath,
+	cmd := exec.Command(exePath,
 		"-loglevel", "error",
 		"-show_format",
 		"-show_streams",
