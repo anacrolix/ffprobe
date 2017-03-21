@@ -29,9 +29,14 @@ func Start(path string) (ret *Cmd, err error) {
 		outputFormatFlag, "json",
 		path)
 	setHideWindow(cmd)
-	var stdout, stderr *io.PipeReader
-	stdout, cmd.Stdout = io.Pipe()
-	stderr, cmd.Stderr = io.Pipe()
+	stdout, err := cmd.StdoutPipe()
+	if err != nil {
+		return
+	}
+	stderr, err := cmd.StderrPipe()
+	if err != nil {
+		return
+	}
 	err = cmd.Start()
 	if err != nil {
 		return
@@ -50,13 +55,13 @@ func (me *Cmd) runner(stdout, stderr io.ReadCloser) {
 	d := json.NewDecoder(bufio.NewReader(stdout))
 	decodeErr := d.Decode(&me.Info)
 	stdout.Close()
-	waitErr := me.Cmd.Wait()
+	lastErrLine, lastErrLineOk := <-lastErrLineCh
 	stderr.Close()
+	waitErr := me.Cmd.Wait()
 	if waitErr == nil {
 		me.Err = decodeErr
 		return
 	}
-	lastErrLine, lastErrLineOk := <-lastErrLineCh
 	if lastErrLineOk {
 		me.Err = fmt.Errorf("%s: %s", waitErr, lastErrLine)
 	} else {
