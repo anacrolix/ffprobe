@@ -90,10 +90,9 @@ func lastLineCh(r io.Reader) <-chan string {
 		defer close(ch)
 		line, ok, err := lastLine(r)
 		switch err {
-		case nil:
-		case io.ErrClosedPipe:
 		default:
 			panic(err)
+		case nil, io.ErrClosedPipe:
 		}
 		if ok {
 			ch <- line
