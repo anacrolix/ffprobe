@@ -18,7 +18,7 @@ type Cmd struct {
 }
 
 func Start(path string) (ret *Cmd, err error) {
-	if exePath == "" {
+	if !exeFound() {
 		err = ExeNotFound
 		return
 	}

@@ -18,6 +18,9 @@ import (
 )
 
 func TestEmptyFile(t *testing.T) {
+	if !exeFound() {
+		t.SkipNow()
+	}
 	f, err := ioutil.TempFile("", "")
 	require.NoError(t, err)
 	defer os.Remove(f.Name())
@@ -26,6 +29,9 @@ func TestEmptyFile(t *testing.T) {
 }
 
 func TestKilledWhileStuckReading(t *testing.T) {
+	if !exeFound() {
+		t.SkipNow()
+	}
 	time.Sleep(time.Second)
 	defer missinggo.GoroutineLeakCheck(t)()
 	l, err := net.Listen("tcp", "localhost:0")

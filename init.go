@@ -10,6 +10,10 @@ var (
 	outputFormatFlag = "-of"
 )
 
+func exeFound() bool {
+	return exePath != ""
+}
+
 func init() {
 	var err error
 	exePath, err = exec.LookPath("ffprobe")
