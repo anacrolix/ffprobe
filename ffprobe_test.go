@@ -11,7 +11,7 @@ import (
 	"time"
 
 	_ "github.com/anacrolix/envpprof"
-	"github.com/anacrolix/missinggo"
+	"github.com/anacrolix/missinggo/leaktest"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -33,7 +33,7 @@ func TestKilledWhileStuckReading(t *testing.T) {
 		t.SkipNow()
 	}
 	time.Sleep(time.Second)
-	defer missinggo.GoroutineLeakCheck(t)()
+	defer leaktest.GoroutineLeakCheck(t)()
 	l, err := net.Listen("tcp", "localhost:0")
 	require.NoError(t, err)
 	s := http.Server{
