@@ -12,7 +12,6 @@ import (
 
 	_ "github.com/anacrolix/envpprof"
 	"github.com/anacrolix/missinggo/leaktest"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
