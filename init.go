@@ -1,6 +1,7 @@
 package ffprobe
 
 import (
+	"errors"
 	"log"
 	"os/exec"
 )
@@ -17,7 +18,7 @@ func exeFound() bool {
 func init() {
 	var err error
 	exePath, err = exec.LookPath("ffprobe")
-	if err == nil {
+	if err == nil || errors.Is(err, exec.ErrDot) {
 		outputFormatFlag = "-print_format"
 		return
 	}
@@ -25,7 +26,7 @@ func init() {
 		log.Print(err)
 	}
 	exePath, err = exec.LookPath("avprobe")
-	if err == nil {
+	if err == nil || errors.Is(err, exec.ErrDot) {
 		return
 	}
 	if isExecErrNotFound(err) {

@@ -3,6 +3,7 @@ package ffprobe
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os/exec"
@@ -28,6 +29,9 @@ func Start(path string) (ret *Cmd, err error) {
 		"-show_streams",
 		outputFormatFlag, "json",
 		path)
+	if errors.Is(cmd.Err, exec.ErrDot) {
+		cmd.Err = nil
+	}
 	setHideWindow(cmd)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
