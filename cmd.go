@@ -57,6 +57,7 @@ func (me *Cmd) runner(stdout, stderr io.ReadCloser) {
 	defer close(me.Done)
 	lastErrLineCh := lastLineCh(stderr)
 	d := json.NewDecoder(bufio.NewReader(stdout))
+	d.UseNumber()
 	decodeErr := d.Decode(&me.Info)
 	stdout.Close()
 	lastErrLine, lastErrLineOk := <-lastErrLineCh
