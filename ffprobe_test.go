@@ -7,13 +7,13 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"regexp"
 	"testing"
 	"time"
 
 	_ "github.com/anacrolix/envpprof"
 	"github.com/anacrolix/missinggo/leaktest"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/go-quicktest/qt"
 )
 
 func TestEmptyFile(t *testing.T) {
@@ -21,10 +21,11 @@ func TestEmptyFile(t *testing.T) {
 		t.SkipNow()
 	}
 	f, err := ioutil.TempFile("", "")
-	require.NoError(t, err)
+	qt.Assert(t, qt.IsNil(err))
 	defer os.Remove(f.Name())
 	_, err = Run(f.Name())
-	assert.EqualError(t, err, fmt.Sprintf("exit status 1: %s: Invalid data found when processing input", f.Name()))
+	qt.Check(t, qt.ErrorMatches(err, regexp.QuoteMeta(
+		fmt.Sprintf("exit status 1: %s: Invalid data found when processing input", f.Name()))))
 }
 
 func TestKilledWhileStuckReading(t *testing.T) {
@@ -34,7 +35,7 @@ func TestKilledWhileStuckReading(t *testing.T) {
 	time.Sleep(time.Second)
 	defer leaktest.GoroutineLeakCheck(t)()
 	l, err := net.Listen("tcp", "localhost:0")
-	require.NoError(t, err)
+	qt.Assert(t, qt.IsNil(err))
 	s := http.Server{
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			log.Print("got request")
@@ -46,8 +47,8 @@ func TestKilledWhileStuckReading(t *testing.T) {
 	}()
 	defer s.Close()
 	cmd, err := Start("http://" + l.Addr().String())
-	require.NoError(t, err)
-	require.NoError(t, cmd.Cmd.Process.Kill())
+	qt.Assert(t, qt.IsNil(err))
+	qt.Assert(t, qt.IsNil(cmd.Cmd.Process.Kill()))
 	s.Close()
 	// time.Sleep(time.Second)
 	// select {}
